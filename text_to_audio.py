@@ -1,15 +1,14 @@
-
 import os
 import uuid
 from dotenv import load_dotenv
 from elevenlabs import VoiceSettings
 from elevenlabs.client import ElevenLabs
-from config import ELEVENLABS_API_KEY
+# CHANGE: removed "from config import ELEVENLABS_API_KEY" (the key was exposed in the repo)
 
 load_dotenv()
 
 elevenlabs = ElevenLabs(
-    api_key=ELEVENLABS_API_KEY,
+    api_key=os.getenv("ELEVENLABS_API_KEY"),  # CHANGE: key now comes from the .env file
 )
 
 

@@ -7,10 +7,22 @@ endblock %} {% block extra_css %}
 {% endblock %} {% block content %}
 <div class="container gallery-container">
   <h1 class="gallery-title">Reel Gallery</h1>
+  {% if reels %}
   <div class="gallery-grid">
     {% for reel in reels %}
-    <video src="/static/reels/{reel}" controls></video>
+    <video
+      src="{{ url_for('static', filename='reels/' ~ reel) }}"
+      controls
+      preload="metadata"
+    ></video>
     {% endfor %}
   </div>
+  {% else %}
+  <p class="text-center">
+    No reels yet. Reels take a few seconds to generate after you create them, so
+    <a href="/gallery">refresh</a> in a moment, or
+    <a href="/create">create one</a>.
+  </p>
+  {% endif %}
 </div>
 {% endblock %}

@@ -1,0 +1,6 @@
+.env
+__pycache__/
+*.pyc
+user_uploads/
+static/reels/*.mp4
+done.txt

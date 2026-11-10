@@ -1,62 +1,96 @@
-{% extends "base.html" %}
-
-{% block title %}Create Reel - AI Reel Generator{% endblock %}
-
-{% block extra_css %} 
-<link rel="stylesheet" href="{{ url_for('static', filename='css/create.css') }}">
-{% endblock %}
-
-{% block content %}
+{% extends "base.html" %} {% block title %}Create Reel - AI Reel Generator{%
+endblock %} {% block extra_css %}
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/create.css') }}"
+/>
+{% endblock %} {% block content %}
 <section class="upload-section">
-    <div class="container">
-        <div class="upload-container">
-            <h1 class="upload-title">Create Your Reel</h1>
-            <p class="upload-instructions">Upload your video files to create an amazing reel. You can upload multiple files.</p>
-            
-            <form action="/create" enctype="multipart/form-data" method="post" class="dropzone" id="myDropzone">
-                <div class="fallback">
-                    <div id="fileInputs">
-                        <div class="file-input-group">
-                            <input name="file1" type="file" class="file-input" />
-                            <input type="hidden" name="myid" value="{{ myid }}">
-                            <button type="button" class="remove-file-btn" onclick="removeFileInput(this)" disabled>×</button>
-                        </div>
-                    </div>
-                    <button type="button" class="add-file-btn" onclick="addFileInput()">+ Add File</button>
-                </div>
-                
-                <div class="text-input-container">
-                    <textarea class="text-input" id="textInput" name="text" placeholder="Enter your text to be added as voice here..." rows="4"></textarea>
-                </div>
-                
-                <button type="submit" class="submit-btn" id="submitBtn">
-                    Create Reel
-                </button>
-            </form>
+  <div class="container">
+    <div class="upload-container">
+      <h1 class="upload-title">Create Your Reel</h1>
+      <p class="upload-instructions">
+        Upload your images (png, jpg) to create an amazing reel. You can upload
+        multiple files.
+      </p>
+
+      {% if submitted %}
+      <div class="alert alert-success">
+        Your reel is being generated. It will appear in the
+        <a href="/gallery">Gallery</a> in a few seconds.
+      </div>
+      {% endif %} {% if error %}
+      <div class="alert alert-danger">{{ error }}</div>
+      {% endif %}
+
+      <form
+        action="/create"
+        enctype="multipart/form-data"
+        method="post"
+        class="dropzone"
+        id="myDropzone"
+      >
+        <input type="hidden" name="myid" value="{{ myid }}" />
+        <div class="fallback">
+          <div id="fileInputs">
+            <div class="file-input-group">
+              <input
+                name="file1"
+                type="file"
+                class="file-input"
+                accept=".png,.jpg,.jpeg"
+              />
+              <button
+                type="button"
+                class="remove-file-btn"
+                onclick="removeFileInput(this)"
+                disabled
+              >
+                ×
+              </button>
+            </div>
+          </div>
+          <button type="button" class="add-file-btn" onclick="addFileInput()">
+            + Add File
+          </button>
         </div>
+
+        <div class="text-input-container">
+          <textarea
+            class="text-input"
+            id="textInput"
+            name="text"
+            placeholder="Enter your text to be added as voice here..."
+            rows="4"
+          ></textarea>
+        </div>
+
+        <button type="submit" class="submit-btn" id="submitBtn">
+          Create Reel
+        </button>
+      </form>
     </div>
+  </div>
 </section>
-{% endblock %}
-
-{% block extra_js %}
+{% endblock %} {% block extra_js %}
 <script>
-    let fileCounter = 2; // Start from 2 since we already have file1
+  let fileCounter = 2; // Start from 2 since we already have file1
 
-    function addFileInput() {
-        const fileInputs = document.getElementById('fileInputs');
-        const newFileInput = document.createElement('div');
-        newFileInput.className = 'file-input-group';
-        newFileInput.innerHTML = `
-            <input name="file${fileCounter}" type="file" class="file-input" />
+  function addFileInput() {
+    const fileInputs = document.getElementById("fileInputs");
+    const newFileInput = document.createElement("div");
+    newFileInput.className = "file-input-group";
+    newFileInput.innerHTML = `
+            <input name="file${fileCounter}" type="file" class="file-input" accept=".png,.jpg,.jpeg" />
             <button type="button" class="remove-file-btn" onclick="removeFileInput(this)">×</button>
         `;
-        fileInputs.appendChild(newFileInput);
-        fileCounter++;
-    }
+    fileInputs.appendChild(newFileInput);
+    fileCounter++;
+  }
 
-    function removeFileInput(button) {
-        const fileInputGroup = button.parentElement;
-        fileInputGroup.remove();
-    }
+  function removeFileInput(button) {
+    const fileInputGroup = button.parentElement;
+    fileInputGroup.remove();
+  }
 </script>
-{% endblock %} 
+{% endblock %}

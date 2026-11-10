@@ -6,6 +6,10 @@ import os
 UPLOAD_FOLDER = 'user_uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
+# CHANGE 1: make sure the folders exist (static/reels was missing, which broke the gallery)
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+os.makedirs("static/reels", exist_ok=True)
+
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
@@ -30,15 +34,17 @@ def create():
                 if(not(os.path.exists(os.path.join(app.config['UPLOAD_FOLDER'], rec_id)))):
                     os.mkdir(os.path.join(app.config['UPLOAD_FOLDER'], rec_id))
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], rec_id,  filename))
-                input_files.append(file.filename)
+                input_files.append(filename)  # CHANGE 2: was file.filename, but the saved name is the cleaned one
                 print(file.filename)
             # Capture the description and save it to a file
-            with open(os.path.join(app.config['UPLOAD_FOLDER'], rec_id, "desc.txt"), "w") as f:
+            # CHANGE 3: file name is now description.txt, because generate_process.py reads that name
+            with open(os.path.join(app.config['UPLOAD_FOLDER'], rec_id, "description.txt"), "w") as f:
                 f.write(desc)
         for fl in input_files:
             with open(os.path.join(app.config['UPLOAD_FOLDER'], rec_id,  "input.txt"), "a") as f:
                 f.write(f"file '{fl}'\nduration 1\n")
-
+        # CHANGE 4: tell the worker the upload is complete, so it doesn't pick up a half-saved folder
+        open(os.path.join(app.config['UPLOAD_FOLDER'], rec_id, "ready.txt"), "w").close()
 
     return render_template("create.html", myid=myid)
 @app.route("/gallery")
